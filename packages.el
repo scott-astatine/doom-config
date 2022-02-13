@@ -17,7 +17,7 @@
 ;;   (package! epc :recipe (:host github :repo "kiwanami/emacs-epc")))
 
 
-;; (package! theme-magic :pin "844c4311bd26ebafd4b6a1d72ddcc65d87f074e3")
+;; (package! theme-magic)
 
 ;; (use-package! theme-magic
 ;;   :commands theme-magic-from-emacs

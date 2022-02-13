@@ -26,14 +26,14 @@
 
 ;;; Fonts
 (setq
- doom-font (font-spec :family "Fira Code" :size 12 :antialias t)
- doom-variable-pitch-font (font-spec :family "Deja Vu Sans Mono" :size 16)
- doom-unicode-font (font-spec :family "Noto Color Emoji" :size 14)
+ doom-font (font-spec :family "JetBrains Mono" :size 12 :antialias t)
+ doom-variable-pitch-font (font-spec :family "Deja Vu Sans Mono" :size 17)
+ doom-unicode-font (font-spec :family "Noto Color Emoji" :size 15)
  doom-big-font (font-spec :family "JetBrains Mono" :size 18)
- +zen-text-scale 0.8)
+ +zen-text-scale 0.9)
 ;;;
 
-(setq doom-theme 'doom-monokai-pro)
+(setq doom-theme 'doom-monokai-classic)
 (remove-hook 'window-setup-hook #'doom-init-theme-h)
 (add-hook 'after-init-hook #'doom-init-theme-h 'append)
 (delq! t custom-theme-load-path)
@@ -53,8 +53,7 @@
       ispell-dictionary "uk"
       emojify-emoji-set "twemoji-v2"
       evil-split-window-below t
-      evil-vsplit-window-right t
-      )
+      evil-vsplit-window-right t)
 
 (setq-default indent-tabs-mode t)
 (setq-default tab-width 4) ; Assuming you want your tabs to be four spaces wide
@@ -67,7 +66,7 @@
 (setq
  centaur-tabs-style "slant"
  centaur-tabs-set-bar nil
- centaur-tabs-height 23
+ centaur-tabs-height 22
  centaur-tabs-modified-marker "●"
  centaur-tabs-show-navigation-buttons nil
  centaur-tabs-adjust-buffer-order t
@@ -119,8 +118,9 @@
       emms-info-functions '(emms-info-tinytag)
       emms-playlist-buffer-name "Music"
       emms-mode-line-icon-color "#2c2fe9"
+      emms-mode-line-icon-enabled-p nil
       emms-volume-amixer-card 1
-      emms-mode-line-format " %s |")
+      emms-mode-line-format "[ 🎶 %s ]")
 
 (require 'emms-player-simple)
 (require 'emms-source-file)
@@ -150,7 +150,6 @@
 	  (t (emms-track-simple-description track)))))
 
 (setq emms-track-description-function 'my-emms-track-description)
-
 ;;;
 
 
@@ -159,7 +158,7 @@
       display-time-format " 🗓 %d %a %H:%M:%S "
       display-time-interval 1
       doom-modeline-major-mode-icon t
-      doom-modeline-height 25
+      doom-modeline-height 23
       doom-modeline-bar-width 4
       doom-modeline-env-version nil
       display-time-default-load-average nil
@@ -223,7 +222,6 @@
   (doom-modeline-def-modeline 'pdf
     '(bar window-number pdf-pages pdf-icon buffer-name)
     '(misc-info matches major-mode process vcs)))
-
 ;;;
 
 
@@ -253,6 +251,7 @@
 ;;; Splash
 
 (let ((splash '("doom-emacs-color.png"
+		"doom-emacs-color2.png"
 		"doom-emacs-flugo-slant_out_purple-small.png"
 		"doom-emacs-flugo-slant_out_bw-small.png")))
   (setq fancy-splash-image
@@ -270,15 +269,6 @@
 
 ;;;
 
-;;; Buffer configs
-
-(add-hook 'doom-first-buffer-hook
-	  (defun +abbrev-file-name ()
-	    (setq-default abbrev-mode t)
-	    (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir))))
-
-;;;
-
 ;;; Writeroom
 
 (defvar +zen-serif-p t)
@@ -286,7 +276,7 @@
 (after! writeroom-mode
   (defvar-local +zen--original-org-indent-mode-p nil)
   (defvar-local +zen--original-mixed-pitch-mode-p nil)
-  (defvar-local +zen--original-org-pretty-table-mode-p nil)
+  ;; (defvar-local +zen--original-org-pretty-table-mode-p nil)
   (defun +zen-enable-mixed-pitch-mode-h ()
     "Enable `mixed-pitch-mode' when in `+zen-mixed-pitch-modes'."
     (when (apply #'derived-mode-p +zen-mixed-pitch-modes)
@@ -372,35 +362,3 @@
 
 ;;; LSP
 (load-file "~/.doom.d/lsp.el")
-
-;;; EAF
-
-;; (use-package! eaf
-;;   :custom
-;;   (browse-url-browser-function #'eaf-open-browser) ;; Make EAF Browser my default browser
-;;   (eaf-browser-continue-where-left-off t)
-;;   (eaf-start-python-process-when-require t)
-;;   (eaf-browser-default-zoom 1.25)
-;;   (eaf-browser-dark-mode nil)
-;;   (eaf-browser-enable-adblocker t)
-;;   (eaf-browser-enable-autofill t)
-;;   (eaf-file-manager-show-preview nil)
-;;   (eaf-pdf-dark-mode "ignore")
-;;   :config
-;;   (require 'eaf-browser)
-;;   (require 'eaf-pdf-viewer)
-;;   (require 'eaf-rss-reader)
-;;   (require 'eaf-music-player)
-;;   (require 'eaf-markdown-previewer)
-;;   (require 'eaf-jupyter)
-;;   (require 'eaf-video-player))
-
-;; (setq browse-url-browser-function 'eaf-open-browser)
-;; (defalias 'browse-web #'eaf-open-browser)
-;; (setq eaf-browser-enable-adblocker "true")
-;; (setq eaf-browser-continue-where-left-off t)
-;; (setq eaf-browser-default-search-engine "duckduckgo")
-;; (setq eaf-browse-blank-page-url "https://duckduckgo.com")
-;; (setq eaf-browser-default-zoom "3")
-;; ;
-;;
