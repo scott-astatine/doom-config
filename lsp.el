@@ -8,3 +8,8 @@
 	lsp-ui-doc-max-width 90
 	lsp-ui-doc-show-with-cursor t
 	lsp-ui-doc-show-with-mouse t))
+
+
+(use-package nim-mode
+  :ensure t
+  :hook (nim-mode . lsp))

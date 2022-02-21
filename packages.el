@@ -1,11 +1,14 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 
-(package! info-colors :pin "47ee73cc19b1049eef32c9f3e264ea7ef2aaf8a5")
-(use-package! info-colors
-  :commands (info-colors-fontify-node))
+(package! info-colors)
+(package! which-key-posframe)
 
-(add-hook 'Info-selection-hook 'info-colors-fontify-node)
+
+(unpin! evil)
+(unpin! ivy)
+(unpin! vertico)
+(unpin! lsp-mode)
 
 ;; (when (package! eaf :recipe (:host github
 ;;                              :repo "manateelazycat/emacs-application-framework"

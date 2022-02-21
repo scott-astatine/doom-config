@@ -8,30 +8,31 @@
  :desc "Previous Buffer" :n 	"H" #'centaur-tabs-backward)
 
 (map! :leader
-      :desc "Eval expression"       ";"    #'pp-eval-expression
-      :desc "M-x"                   ":"    #'execute-extended-command
-      :desc "Pop up scratch buffer" "x"    #'doom/open-scratch-buffer
-      :desc "Org Capture"           "X"    #'org-capture
-      ;; C-u is used by evil
-      :desc "Universal argument"    "u"    #'universal-argument
-      :desc "window"                "w"    evil-window-map
-      :desc "help"                  "h"    help-map
+      :desc "Eval expression"		";"    #'pp-eval-expression
+      :desc "M-x"                   	":"    #'execute-extended-command
+      :desc "Pop up scratch buffer" 	"x"    #'doom/open-scratch-buffer
+      :desc "Org Capture"		"X"    #'org-capture
+      :desc "Universal argument"	"u"    #'universal-argument
+      :desc "window"			"w"    evil-window-map
+      :desc "Increase Width"		"w."   'evil-window-increase-width
+      :desc "Decrease Width"		"w,"   'evil-window-decrease-width
+      :desc "help"			"h"    help-map
 
       (:when (featurep! :ui treemacs)
-       :desc "Project sidebar" "e" #'treemacs-select-window)
+       :desc "Project sidebar"		"e" #'treemacs-select-window)
 
       (:when (featurep! :ui popup)
-       :desc "Toggle last popup"     "~"    #'+popup/toggle)
+       :desc "Toggle last popup"	"~"    #'+popup/toggle)
 
-      :desc "Find file"             "."    #'find-file
-      :desc "Switch buffer"         ","    #'switch-to-buffer
+      :desc "Find file"			"."    #'find-file
+      :desc "Switch buffer"		","    #'switch-to-buffer
 
       (:when (featurep! :ui workspaces)
-       :desc "Switch workspace buffer" "," #'persp-switch-to-buffer
-       :desc "Switch buffer"           "<" #'switch-to-buffer)
+       :desc "Switch workspace buffer"	"," #'persp-switch-to-buffer
+       :desc "Switch buffer"		"<" #'switch-to-buffer)
 
-      :desc "Switch to last buffer" "`"    #'evil-switch-to-windows-last-buffer
-      :desc "Resume last search"    "'"
+      :desc "Switch to last buffer"	"`"    #'evil-switch-to-windows-last-buffer
+      :desc "Resume last search"	"'"
 
       (cond ((featurep! :completion vertico)    #'vertico-repeat)
             ((featurep! :completion ivy)        #'ivy-resume)
@@ -42,6 +43,7 @@
 
       :desc "Find file in project"  "SPC"  #'projectile-find-file
       :desc "Jump to bookmark"      "RET"  #'bookmark-jump
+
 
       ;;; <leader> TAB --- workspace
       (:when (featurep! :ui workspaces)
@@ -80,6 +82,7 @@
         :desc "Switch buffer"           "B" #'switch-to-buffer)
        (:unless (featurep! :ui workspaces)
         :desc "Switch buffer"           "b" #'switch-to-buffer)
+       :desc "Switch buffer"           "b" #'switch-to-buffer
        :desc "Clone buffer"                "c"   #'clone-indirect-buffer
        :desc "Clone buffer other window"   "C"   #'clone-indirect-buffer-other-window
        :desc "Kill buffer"                 "d"   #'kill-current-buffer
@@ -134,7 +137,7 @@
        :desc "Recompile"                             "C"   #'recompile
        :desc "Jump to definition"                    "d"   #'+lookup/definition
        :desc "Jump to references"                    "D"   #'+lookup/references
-       :desc "Evaluate buffer/region"                "e"   #'+eval/buffer-or-region
+       :desc "Evaluate buffer"                "e"   #'eval-buffer
        :desc "Evaluate & replace region"             "E"   #'+eval:replace-region
        :desc "Format buffer/region"                  "f"   #'+format/region-or-buffer
        :desc "Find implementations"                  "i"   #'+lookup/implementations
@@ -174,6 +177,7 @@
        :desc "Copy link to homepage"       "Y"   #'+vc/browse-at-remote-kill-homepage
        (:when (featurep! :ui hydra)
         :desc "SMerge"                    "m"   #'+vc/smerge-hydra/body)
+
        (:when (featurep! :ui vc-gutter)
         (:when (featurep! :ui hydra)
          :desc "VCGutter"                "."   #'+vc/gutter-hydra/body)
@@ -182,6 +186,7 @@
         :desc "Git time machine"          "t"   #'git-timemachine-toggle
         :desc "Jump to next hunk"         "]"   #'git-gutter:next-hunk
         :desc "Jump to previous hunk"     "["   #'git-gutter:previous-hunk)
+
        (:when (featurep! :tools magit)
         :desc "Magit dispatch"            "/"   #'magit-dispatch
         :desc "Magit file dispatch"       "."   #'magit-file-dispatch
@@ -196,12 +201,14 @@
         :desc "Magit buffer log"          "L"   #'magit-log-buffer-file
         :desc "Git stage file"            "S"   #'magit-stage-file
         :desc "Git unstage file"          "U"   #'magit-unstage-file
+
         (:prefix ("f" . "find")
          :desc "Find file"                 "f"   #'magit-find-file
          :desc "Find gitconfig file"       "g"   #'magit-find-git-config-file
          :desc "Find commit"               "c"   #'magit-show-commit
          :desc "Find issue"                "i"   #'forge-visit-issue
          :desc "Find pull request"         "p"   #'forge-visit-pullreq)
+
         (:prefix ("o" . "open in browser")
          :desc "Browse file or region"     "o"   #'+vc/browse-at-remote
          :desc "Browse homepage"           "h"   #'+vc/browse-at-remote-homepage
@@ -317,25 +324,29 @@
 
       ;;; <leader> o --- open
       (:prefix-map ("o" . "open")
+
        :desc "Org agenda"       "A"  #'org-agenda
+       :desc "Open Browser"    		"b"  #'eww
+       :desc "Start debugger"     	"d"  #'+debugger/start
+       :desc "New frame"          	"f"  #'make-frame
+       :desc "Select frame"       	"F"  #'select-frame-by-name
+       :desc "REPL"               	"r"  #'+eval/open-repl-other-window
+       :desc "REPL (same window)" 	"R"  #'+eval/open-repl-same-window
+       :desc "Dired"              	"-"  #'dired-jump
+
        (:prefix ("a" . "org agenda")
-        :desc "Agenda"         "a"  #'org-agenda
-        :desc "Todo list"      "t"  #'org-todo-list
-        :desc "Tags search"    "m"  #'org-tags-view
-        :desc "View search"    "v"  #'org-search-view)
-       :desc "Default browser"    "b"  #'browse-url-of-file
-       :desc "Start debugger"     "d"  #'+debugger/start
-       :desc "New frame"          "f"  #'make-frame
-       :desc "Select frame"       "F"  #'select-frame-by-name
-       :desc "REPL"               "r"  #'+eval/open-repl-other-window
-       :desc "REPL (same window)" "R"  #'+eval/open-repl-same-window
-       :desc "Dired"              "-"  #'dired-jump
+        :desc "Agenda"			"a"  #'org-agenda
+        :desc "Todo list"		"t"  #'org-todo-list
+        :desc "Tags search"		"m"  #'org-tags-view
+        :desc "View search"    		"v"  #'org-search-view)
+
        (:when (featurep! :ui neotree)
         :desc "Project sidebar"              "p" #'+neotree/open
         :desc "Find file in project sidebar" "P" #'+neotree/find-this-file)
        (:when (featurep! :ui treemacs)
         :desc "Project sidebar" "p" #'+treemacs/toggle
         :desc "Find file in project sidebar" "P" #'treemacs-find-file)
+
        (:when (featurep! :term shell)
         :desc "Toggle shell popup"    "t" #'+shell/toggle
         :desc "Open shell here"       "T" #'+shell/here)
@@ -348,14 +359,7 @@
        (:when (featurep! :term eshell)
         :desc "Toggle eshell popup"   "e" #'+eshell/toggle
         :desc "Open eshell here"      "E" #'+eshell/here)
-       (:when (featurep! :os macos)
-        :desc "Reveal in Finder"           "o" #'+macos/reveal-in-finder
-        :desc "Reveal project in Finder"   "O" #'+macos/reveal-project-in-finder
-        :desc "Send to Transmit"           "u" #'+macos/send-to-transmit
-        :desc "Send project to Transmit"   "U" #'+macos/send-project-to-transmit
-        :desc "Send to Launchbar"          "l" #'+macos/send-to-launchbar
-        :desc "Send project to Launchbar"  "L" #'+macos/send-project-to-launchbar
-        :desc "Open in iTerm"              "i" #'+macos/open-in-iterm)
+
        (:when (featurep! :tools docker)
         :desc "Docker" "D" #'docker)
        (:when (featurep! :email mu4e)

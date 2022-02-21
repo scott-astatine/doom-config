@@ -5,7 +5,6 @@
       user-mail-address "scottastatine@gmail.com")
 
 ;;; Default Buf & Frame Name
-
 (setq frame-title-format
       '(""
 	(:eval
@@ -23,20 +22,33 @@
       +doom-dashboard-name "*Doom*"
       doom-scratch-initial-major-mode 'lisp-interaction-mode
       )
+;;;
+
 
 ;;; Fonts
 (setq
- doom-font (font-spec :family "JetBrains Mono" :size 12 :antialias t)
+ doom-font (font-spec :family "JetBrains Mono" :size 12 )
  doom-variable-pitch-font (font-spec :family "Deja Vu Sans Mono" :size 17)
  doom-unicode-font (font-spec :family "Noto Color Emoji" :size 15)
  doom-big-font (font-spec :family "JetBrains Mono" :size 18)
+ doom-themes-enable-bold t
+ doom-themes-enable-italic t
  +zen-text-scale 0.9)
+
+(custom-set-faces!
+  '(font-lock-keyword-face :slant italic :weight bold)
+  '(font-lock-function-name-face :weight bold)
+  '(font-lock-comment-face :slant italic))
+
 ;;;
 
-(setq doom-theme 'doom-monokai-classic)
-(remove-hook 'window-setup-hook #'doom-init-theme-h)
-(add-hook 'after-init-hook #'doom-init-theme-h 'append)
-(delq! t custom-theme-load-path)
+;;; Theme
+(defun randtheme()
+  (setq themes '('doom-dracula 'doom-one 'doom-monokai-classic 'doom-monokai-ristretto))
+  (nth (random (length themes)) themes))
+
+(setq doom-theme 'doom-monokai-classic
+      doom-themes-treemacs-theme "doom-colors")
 
 
 ;;; Editor conf
@@ -44,8 +56,6 @@
       make-backup-files t
       indent-tabs-mode t
       org-hide-emphasis-markers t
-      doom-themes-enable-bold t
-      doom-themes-enable-italic t
       confirm-kill-emacs nil
       blink-cursor-mode t
       blink-cursor-interval 0.5
@@ -59,6 +69,13 @@
 (setq-default tab-width 4) ; Assuming you want your tabs to be four spaces wide
 (defvaralias 'c-basic-offset 'tab-width)
 
+
+;;; Modes config
+
+(when (eq major-mode 'fundamental-mode)
+  (setq display-line-numbers 'relative))
+
+
 ;;;
 
 
@@ -66,11 +83,13 @@
 (setq
  centaur-tabs-style "slant"
  centaur-tabs-set-bar nil
- centaur-tabs-height 22
+ centaur-tabs-height 24
+ centaur-tabs-close-button "❌"
  centaur-tabs-modified-marker "●"
  centaur-tabs-show-navigation-buttons nil
  centaur-tabs-adjust-buffer-order t
  )
+
 ;; Hide tabline in certain modes
 (with-eval-after-load 'centaur-tabs
   (defun centaur-tabs-buffer-groups ()
@@ -79,7 +98,8 @@
      (cond
       ((string-equal "*" (substring (buffer-name) 0 1)) "Emacs")
       ((memq major-mode '(org-mode
-			  emacs-lisp-mode)) "Org Mode")
+			  pdf-mode
+			  emacs-lisp-mode)) "Editing Group")
       ((derived-mode-p 'dired-mode) "Dired")
       ((derived-mode-p 'prog-mode
 		       'text-mode) "Editing")
@@ -102,14 +122,12 @@
 		"Flycheck\\|"
 		"Help\\|"
 		"Doom\\|"
-		"which-key\\|"
+		"*which-key*\\|"
 		"helpful\\|"
 		"Occur"
 		"\\).*")
-	name)
-       )))
-  )
-;;;
+	name)))))
+
 
 ;;; Emms
 (emms-all)
@@ -150,18 +168,19 @@
 	  (t (emms-track-simple-description track)))))
 
 (setq emms-track-description-function 'my-emms-track-description)
-;;;
+
 
 
 ;;; Doom Modline
 (setq display-line-numbers-type 'relative
-      display-time-format " 🗓 %d %a %H:%M:%S "
+      display-time-format " 🗓 %a %d %H:%M:%S "
       display-time-interval 1
       doom-modeline-major-mode-icon t
       doom-modeline-height 23
       doom-modeline-bar-width 4
       doom-modeline-env-version nil
       display-time-default-load-average nil
+      doom-modeline-major-mode-icon t
       doom-modeline-mu4e t)
 
 (display-time-mode 1)
@@ -183,6 +202,7 @@
 		t)))
 
 (add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
+
 
 ;;; Pdf-Mode Config
 (after! doom-modeline
@@ -222,8 +242,6 @@
   (doom-modeline-def-modeline 'pdf
     '(bar window-number pdf-pages pdf-icon buffer-name)
     '(misc-info matches major-mode process vcs)))
-;;;
-
 
 ;;; Org
 (after! org
@@ -240,26 +258,38 @@
 
 (setq org-confirm-babel-evaluate nil)
 
-(defun doom-shut-up-a (orig-fn &rest args)
-  (quiet! (apply orig-fn args)))
-
 (advice-add 'org-babel-execute-src-block :around #'doom-shut-up-a)
 
-;;;
+
 
 
 ;;; Splash
-
 (let ((splash '("doom-emacs-color.png"
-		"doom-emacs-color2.png"
-		"doom-emacs-flugo-slant_out_purple-small.png"
-		"doom-emacs-flugo-slant_out_bw-small.png")))
+		"doom-emacs-color2.png")))
   (setq fancy-splash-image
 	(concat doom-private-dir "splash/"
 		(nth (random (length splash)) splash))))
 
+
 ;;; WhichKey
-(setq which-key-allow-multiple-replacements t)
+(setq which-key-allow-multiple-replacements t
+      which-key-popup-type 'frame
+      which-key-frame-max-height 180
+      which-key-frame-max-width 160
+      which-key-allow-imprecise-window-fit t)
+
+(use-package which-key-posframe
+  :after posframe
+  :config
+  (require 'which-key-posframe)
+  (which-key-posframe-mode)
+					;(setq which-key-posframe-poshandlee 'posframe-poshandler-frame-center)
+  (setq which-key-posframe-poshandler 'posframe-poshandler-frame-bottom-center)
+  (set-face-attribute 'which-key-posframe nil :inherit nil :background "#061229")
+  (set-face-attribute 'which-key-command-description-face nil :inherit nil :foreground "ghost white")
+  (set-face-attribute 'which-key-posframe-border nil :inherit nil :background "ghost white")
+  )
+
 (after! which-key
   (pushnew!
    which-key-replacement-alist
@@ -267,6 +297,12 @@
    '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
    ))
 
+
+;;; Info Colors
+(use-package! info-colors
+  :commands (info-colors-fontify-node))
+
+(add-hook 'Info-selection-hook 'info-colors-fontify-node)
 ;;;
 
 ;;; Writeroom
@@ -275,7 +311,7 @@
 
 (after! writeroom-mode
   (defvar-local +zen--original-org-indent-mode-p nil)
-  (defvar-local +zen--original-mixed-pitch-mode-p nil)
+  ;; (defvar-local +zen--original-mixed-pitch-mode-p nil)
   ;; (defvar-local +zen--original-org-pretty-table-mode-p nil)
   (defun +zen-enable-mixed-pitch-mode-h ()
     "Enable `mixed-pitch-mode' when in `+zen-mixed-pitch-modes'."
@@ -291,6 +327,7 @@
 	    'org-adapt-indentation
 	    'org-superstar-headline-bullets-list
 	    'org-superstar-remove-leading-stars)
+
   (add-hook 'writeroom-mode-enable-hook
 	    (defun +zen-prose-org-h ()
 	      "Reformat the current Org buffer appearance for prose."
@@ -309,6 +346,7 @@
 		 +zen--original-org-pretty-table-mode-p (bound-and-true-p org-pretty-table-mode))
 		(org-indent-mode -1)
 		(org-pretty-table-mode 1))))
+
   (add-hook 'writeroom-mode-disable-hook
 	    (defun +zen-nonprose-org-h ()
 	      "Reverse the effect of `+zen-prose-org'."
@@ -319,7 +357,7 @@
 		(unless +zen--original-org-pretty-table-mode-p (org-pretty-table-mode -1))
 		))))
 
-;;;
+
 
 ;;; Treemacs
 
@@ -334,10 +372,8 @@
 	treemacs-follow-after-init               t
 	treemacs-expand-after-init               t
 	treemacs-is-never-other-window           nil
-	treemacs-missing-project-action          'ask
+	treemacs-missing-project-action          'remove
 	treemacs-move-forward-on-expand          nil
-	treemacs-no-png-images                   nil
-	treemacs-no-delete-other-windows         t
 	treemacs-position                        'left
 	treemacs-recenter-after-project-jump     'always
 	treemacs-recenter-after-project-expand   'on-distance
@@ -353,9 +389,10 @@
 	treemacs-width-increment                 1
 
 	treemacs-workspace-switch-cleanup        nil)
-  (treemacs-follow-mode))
+  (use-package! treemacs-follow-mode)
+  (treemacs-follow-mode t))
 
-;;;
+
 
 ;;; Keymaps
 (load-file "~/.doom.d/keymaps.el")
